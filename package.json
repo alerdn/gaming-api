@@ -6,14 +6,17 @@
   "scripts": {
     "start": "node build/index.js",
     "build": "tsc --project tsconfig.json && tscpaths -p tsconfig.json -s ./ -o build",
-    "dev": "nodemon index.ts"
+    "dev": "nodemon --ext ts,env index.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^16.4.5",
     "express": "^4.21.1",
+    "knex": "^3.1.0",
     "nodemon": "^3.1.7",
+    "pg": "^8.13.1",
     "tscpaths": "0.0.9"
   },
   "devDependencies": {
