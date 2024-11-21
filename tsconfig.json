@@ -12,7 +12,8 @@
     "sourceMap": true,
     "baseUrl": ".",
     "paths": {
-      "app/*": ["./app/*"]
+      "app/*": ["./app/*"],
+      "database/*": ["./database/*"]
     }
   },
   "include": ["**/*"],
