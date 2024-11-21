@@ -1,12 +1,12 @@
-import UsersController from "app/controllers/UsersController";
 import { Application } from "express";
+import usuariosRouter from "./usuarios";
 
 function router(app: Application) {
   app.get("/", (req, res) => {
     res.send("Hello World");
   });
 
-  app.get("/users", UsersController.index);
+  usuariosRouter(app);
 }
 
 export default router;

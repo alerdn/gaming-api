@@ -1,3 +1,7 @@
+import { Database } from "database/index";
+
 export default class Usuario {
-  constructor(private nome: string, private email: string) {}
+  static query() {
+    return Database("usuarios");
+  }
 }
