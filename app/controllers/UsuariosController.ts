@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
-import Usuario from "app/models/usuario";
+import Usuario from "app/models/Usuario";
 
 export default class UsuariosController {
   static async index(request: Request, response: Response) {
@@ -9,7 +9,7 @@ export default class UsuariosController {
 
       response.send(usuarios);
     } catch (error: any) {
-      response.status(500).send(error.message);
+      response.status(400).send(error.message);
     }
   }
 
@@ -26,7 +26,7 @@ export default class UsuariosController {
 
       response.send(usuario);
     } catch (error: any) {
-      response.status(500).send(error.message);
+      response.status(400).send(error.message);
     }
   }
 }

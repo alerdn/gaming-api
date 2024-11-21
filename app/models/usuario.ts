@@ -1,7 +1,5 @@
-import { Database } from "database/index";
+import ModelBase from "./ModelBase";
 
-export default class Usuario {
-  static query() {
-    return Database("usuarios");
-  }
+export default class Usuario extends ModelBase {
+  static table = "usuarios";
 }
