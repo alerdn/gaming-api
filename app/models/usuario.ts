@@ -1,5 +1,5 @@
-import ModelBase from "./ModelBase";
+import ModelBase from "utils/ModelBase";
 
 export default class Usuario extends ModelBase {
-  static table = "usuarios";
+
 }

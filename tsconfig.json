@@ -13,7 +13,10 @@
     "baseUrl": ".",
     "paths": {
       "app/*": ["./app/*"],
-      "database/*": ["./database/*"]
+      "database/*": ["./database/*"],
+      "routes/*": ["./routes/*"],
+      "utils/*": ["utils/*"],
+      "*": ["./types/*.d.ts"]
     }
   },
   "include": ["**/*"],
