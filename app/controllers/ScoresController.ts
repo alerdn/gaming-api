@@ -1,8 +1,11 @@
 import { HttpContext } from "global";
 import Score from "app/models/Score";
+import CustomException from "app/exceptions/CustomException";
 
 export default class ScoresController {
-  async index({ request, response }: HttpContext) {
+  async index({ request, response, auth }: HttpContext) {
+    if (!auth.user) throw new CustomException("Usuário não autenticado", 401);
+
     return await Score.query().select("*");
   }
 

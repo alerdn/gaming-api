@@ -2,7 +2,9 @@ import Router from "utils/Router";
 
 export default function usuariosRouter(router: Router) {
   router
-    .group((router) => {
+    .group(() => {
+      router.post("/login", "UsuariosController.login");
+
       router.get("/", "UsuariosController.index");
       router.post("/", "UsuariosController.store");
     })

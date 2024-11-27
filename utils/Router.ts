@@ -1,6 +1,7 @@
 import Server from "utils/Server";
 import { HttpContext, MiddlewareHandler } from "global";
 import { Application, Request, Response } from "express";
+import AuthContract from "./AuthContract";
 
 type RouteCallback = ({ request, response }: HttpContext) => Promise<any>;
 type Route = {
@@ -47,11 +48,11 @@ export default class Router {
     return this._instance;
   }
 
-  group(callback: (route: Router) => void) {
+  group(configure: () => void) {
     const router: Route = { method: "router", subRoutes: [] };
     this._routes.push(router);
 
-    callback(this);
+    configure();
 
     return new RouterGroup(router.subRoutes!);
   }
@@ -118,8 +119,15 @@ export default class Router {
           route.path!,
           resolvedMiddlwares,
           async (request: Request, response: Response) => {
+            const auth: AuthContract = request.body.auth;
+            delete request.body.auth;
+
             const handlerResolved = await this.#resolveHandler(route.handler!);
-            await this.#resolveRoute(handlerResolved, { request, response });
+            await this.#resolveRoute(handlerResolved, {
+              request,
+              response,
+              auth,
+            });
           }
         );
       }
@@ -151,13 +159,15 @@ export default class Router {
 
   async #resolveRoute(
     handlerResolved: RouteCallback,
-    { request, response }: HttpContext
+    { request, response, auth }: HttpContext
   ) {
     try {
-      const resposta = await handlerResolved({ request, response });
+      const resposta = await handlerResolved({ request, response, auth });
       response.send(resposta);
     } catch (error: any) {
-      response.status(error.status ?? 500).send(error.message);
+      response.status(error.status ?? 400).send({
+        error: { message: error.message, status: error.status ?? 400 },
+      });
     }
   }
 

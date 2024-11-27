@@ -3,6 +3,12 @@ import bcrypt from "bcrypt";
 import Usuario from "app/models/Usuario";
 
 export default class UsuariosController {
+  async login({ request, response, auth }: HttpContext) {
+    const { email, senha } = request.body;
+
+    return await auth.login(email, senha);
+  }
+
   async index({ request, response }: HttpContext) {
     return await Usuario.query().select("*");
   }
