@@ -6,5 +6,6 @@ export default function usuariosRouter(router: Router) {
       router.get("/", "UsuariosController.index");
       router.post("/", "UsuariosController.store");
     })
-    .prefix("/usuarios").middleware(["auth"]);
+    .prefix("/usuarios")
+    .middleware(["auth"]);
 }

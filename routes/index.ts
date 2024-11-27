@@ -8,6 +8,8 @@ function routes(app: Application) {
 
   usuariosRouter(router);
   scoresRouter(router);
+
+  router.registerRoutes();
 }
 
 export default routes;
