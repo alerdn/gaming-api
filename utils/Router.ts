@@ -1,11 +1,13 @@
-import { HttpContext } from "global";
-import { Application, Router as ERouter } from "express";
+import Server from "utils/Server";
+import { HttpContext, MiddlewareHandler } from "global";
+import { Application, Request, Response } from "express";
 
 type RouteCallback = ({ request, response }: HttpContext) => Promise<any>;
 type Route = {
   path?: string;
   method: "get" | "post" | "router";
   handler?: string;
+  middleware?: string[];
   subRoutes?: Route[];
 };
 
@@ -18,15 +20,32 @@ class RouterGroup {
     });
     return this;
   }
+
   middleware(names: string[]) {
+    this.routes.forEach((route) => {
+      if (!route.middleware) route.middleware = [];
+
+      route.middleware.push(...names);
+    });
     return this;
   }
 }
 
 export default class Router {
+  static _instance: Router;
+
+  _app: Application;
   _routes: Route[] = [];
 
-  constructor(private app: Application) {}
+  constructor() {
+    this._app = Server.Instance.app;
+  }
+
+  static get Instance() {
+    if (!this._instance) this._instance = new this();
+
+    return this._instance;
+  }
 
   group(callback: (route: Router) => void) {
     const router: Route = { method: "router", subRoutes: [] };
@@ -45,6 +64,19 @@ export default class Router {
     }
 
     lastRoute.path = path + lastRoute.path;
+    return new RouterGroup([lastRoute]);
+  }
+
+  middleware(names: string[]) {
+    let lastRoute = this._routes[this._routes.length - 1];
+
+    if (lastRoute.method === "router") {
+      lastRoute = lastRoute.subRoutes![lastRoute.subRoutes!.length - 1];
+    }
+
+    if (!lastRoute.middleware) lastRoute.middleware = [];
+
+    lastRoute.middleware.push(...names);
     return new RouterGroup([lastRoute]);
   }
 
@@ -69,14 +101,27 @@ export default class Router {
       } else {
         console.log(
           "\x1b[34m",
-          `${route.method.toUpperCase()} ${route.path!.padStart(40, ".")}`,
+          `${route.method.toUpperCase().padEnd(5, " ")} ${
+            route.path
+          } ${route.handler?.padStart(40, ".")} ${
+            route.middleware ? `[${route.middleware.join(", ")}]` : ""
+          }`,
           "\x1b[0m"
         );
 
-        this.app[route.method](route.path!, async (request, response) => {
-          const handlerResolved = this.#resolveHandler(route.handler!);
-          await this.#resolveRoute(handlerResolved, { request, response });
-        });
+        const resolvedMiddlwares =
+          route.middleware
+            ?.map((middleware) => this.#resolveMiddleware(middleware))
+            .filter((mid) => mid != undefined) ?? [];
+
+        this._app[route.method](
+          route.path!,
+          resolvedMiddlwares,
+          async (request: Request, response: Response) => {
+            const handlerResolved = await this.#resolveHandler(route.handler!);
+            await this.#resolveRoute(handlerResolved, { request, response });
+          }
+        );
       }
     });
   }
@@ -95,10 +140,10 @@ export default class Router {
     }
   }
 
-  #resolveHandler(handler: string) {
+  async #resolveHandler(handler: string) {
     const [controller, method] = handler.split(".");
 
-    const module = require("app/controllers/" + controller);
+    const module = await import("app/controllers/" + controller);
     const lazyClass = new module.default();
 
     return <RouteCallback>lazyClass[method];
@@ -114,5 +159,9 @@ export default class Router {
     } catch (error: any) {
       response.status(error.status ?? 500).send(error.message);
     }
+  }
+
+  #resolveMiddleware(middleware: string) {
+    return Server.Instance.namedMiddlewares.get(middleware);
   }
 }

@@ -7,5 +7,5 @@ export default function usuariosRouter(router: Router) {
       router.post("/", "UsuariosController.store");
     })
     .prefix("/usuarios")
-    .middleware(["auth"]);
+    .middleware(["log"]);
 }

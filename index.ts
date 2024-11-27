@@ -1,13 +1,8 @@
 require("dotenv").config();
-import express from "express";
-import bodyParser from "body-parser";
-import routes from "routes/index";
+import Server from "utils/Server";
 
-const app = express();
-app.use(bodyParser.json());
+const PORT = process.env.PORT ?? 3000;
 
-routes(app);
-
-app.listen(process.env.PORT ?? 3000, () => {
-  console.log("Server is running on port 3000");
+Server.Instance.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });

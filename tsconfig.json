@@ -14,7 +14,7 @@
     "paths": {
       "app/*": ["./app/*"],
       "database/*": ["./database/*"],
-      "routes/*": ["./routes/*"],
+      "start/*": ["start/*"],
       "utils/*": ["utils/*"],
       "*": ["./types/*.d.ts"]
     }
