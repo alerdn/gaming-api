@@ -3,7 +3,7 @@ import { routesConfig } from "start/routes";
 import { kernelConfig } from "start/Kernel";
 import { MiddlewareHandler } from "global";
 import Router from "./Router";
-import IMiddleware from "./IMiddleware";
+import IMiddleware from "./interfaces/IMiddleware";
 
 export default class Server {
   static _instance: Server;

@@ -1,10 +1,18 @@
-import Router from "utils/Router";
+import Router from "framework/Router";
 
 export default function scoresRouter(router: Router) {
   router
     .group(() => {
-      router.get("/", "ScoresController.index").middleware(["auth"]);
-      router.post("/", "ScoresController.store");
+      router
+        .group(() => {
+          router.get("/", "ScoresController.index");
+          router.post("/", "ScoresController.store");
+        })
+        .prefix("/scores");
+
+        router.get("/:id", "ScoresController.show");
     })
-    .prefix("/scores");
+    .prefix("/api");
+
+    router.get("/ablu/:id", "ScoresController.show");
 }

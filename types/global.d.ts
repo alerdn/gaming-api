@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import AuthContract from "utils/AuthContract";
+import AuthContract from "framework/AuthContract";
 
 declare type HttpContext = {
   request: Request;

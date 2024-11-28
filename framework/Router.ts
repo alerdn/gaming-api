@@ -1,5 +1,5 @@
-import Server from "utils/Server";
-import { HttpContext, MiddlewareHandler } from "global";
+import Server from "framework/Server";
+import { HttpContext } from "global";
 import { Application, Request, Response } from "express";
 import AuthContract from "./AuthContract";
 
@@ -37,6 +37,7 @@ export default class Router {
 
   _app: Application;
   _routes: Route[] = [];
+  _isConfiguringGroup = false;
 
   constructor() {
     this._app = Server.Instance.app;
@@ -49,12 +50,22 @@ export default class Router {
   }
 
   group(configure: () => void) {
-    const router: Route = { method: "router", subRoutes: [] };
-    this._routes.push(router);
+    let lastRoute = this._routes[this._routes.length - 1];
 
-    configure();
-
-    return new RouterGroup(router.subRoutes!);
+    if ( this._isConfiguringGroup) {
+      configure();
+      return new RouterGroup(lastRoute.subRoutes!);
+    }else {
+      this._isConfiguringGroup = true;
+      
+      lastRoute = { method: "router", subRoutes: [] };
+      this._routes.push(lastRoute);
+      
+      configure();
+      
+      this._isConfiguringGroup = false;
+      return new RouterGroup(lastRoute.subRoutes!);
+    }
   }
 
   prefix(path: string) {

@@ -1,5 +1,5 @@
 require("dotenv").config();
-import Server from "utils/Server";
+import Server from "framework/Server";
 
 const PORT = process.env.PORT ?? 3000;
 

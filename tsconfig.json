@@ -15,7 +15,7 @@
       "app/*": ["./app/*"],
       "database/*": ["./database/*"],
       "start/*": ["start/*"],
-      "utils/*": ["utils/*"],
+      "framework/*": ["framework/*"],
       "*": ["./types/*.d.ts"]
     }
   },

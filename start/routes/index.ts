@@ -1,9 +1,14 @@
 import usuariosRouter from "./Usuarios";
 import scoresRouter from "./Scores";
-import Router from "utils/Router";
+import Router from "framework/Router";
 
 export const routesConfig = () => {
   const router = Router.Instance;
   usuariosRouter(router);
-  scoresRouter(router);
+
+  router
+    .group(() => {
+      scoresRouter(router);
+    })
+    .middleware(["auth"]);
 };
