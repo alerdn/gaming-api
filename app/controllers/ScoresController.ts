@@ -4,17 +4,16 @@ import CustomException from "app/exceptions/CustomException";
 
 export default class ScoresController {
   async index({ request, response, auth }: HttpContext) {
-    if (!auth.user) throw new CustomException("Usuário não autenticado", 403);
-
     return await Score.query().select("*");
   }
 
   async show({ request, response, auth }: HttpContext) {
-    if (!auth.user) throw new CustomException("Usuário não autenticado", 403);
-
     const { id } = request.params;
 
-    return await Score.query().where({ id }).first();
+    const score = await Score.query().where({ id }).first();
+    if (!score) throw new CustomException("Score não encontrado", 404);
+
+    return score;
   }
 
   async store({ request }: HttpContext) {

@@ -52,17 +52,17 @@ export default class Router {
   group(configure: () => void) {
     let lastRoute = this._routes[this._routes.length - 1];
 
-    if ( this._isConfiguringGroup) {
+    if (this._isConfiguringGroup) {
       configure();
       return new RouterGroup(lastRoute.subRoutes!);
-    }else {
+    } else {
       this._isConfiguringGroup = true;
-      
+
       lastRoute = { method: "router", subRoutes: [] };
       this._routes.push(lastRoute);
-      
+
       configure();
-      
+
       this._isConfiguringGroup = false;
       return new RouterGroup(lastRoute.subRoutes!);
     }
@@ -151,11 +151,11 @@ export default class Router {
     handler: string
   ) {
     const lastRoute = this._routes[this._routes.length - 1];
-
-    if (!lastRoute) {
-      this._routes.push({ path, method, handler });
-    } else if (lastRoute.method === "router") {
+    
+    if (lastRoute?.method === "router" && this._isConfiguringGroup) {
       lastRoute.subRoutes!.push({ path, method, handler });
+    } else {
+      this._routes.push({ path, method, handler });
     }
   }
 

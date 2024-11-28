@@ -1,7 +1,8 @@
 require("dotenv").config();
 import Server from "framework/Server";
+import Env from "framework/Env";
 
-const PORT = process.env.PORT ?? 3000;
+const PORT = Env.get("PORT") ?? 3000;
 
 Server.Instance.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

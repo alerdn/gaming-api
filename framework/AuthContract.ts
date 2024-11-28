@@ -1,8 +1,9 @@
 import bcrypt from "bcrypt";
 import Usuario from "app/models/Usuario";
 import jwt from "jsonwebtoken";
+import Env from "./Env";
 
-const APP_KEY = process.env.APP_KEY;
+const APP_KEY = Env.get("APP_KEY");
 
 export default class AuthContract {
   user: Usuario | null = null;

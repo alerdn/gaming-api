@@ -1,8 +1,9 @@
 import CustomException from "app/exceptions/CustomException";
 import Usuario from "app/models/Usuario";
 import { Request, Response, NextFunction } from "express";
+import Env from "framework/Env";
 import jwt from "jsonwebtoken";
-const APP_KEY = process.env.APP_KEY;
+const APP_KEY = Env.get("APP_KEY");
 
 export default class Auth {
   async handle(req: Request, res: Response, next: NextFunction) {
