@@ -2,6 +2,7 @@ import Server from "framework/Server";
 import { HttpContext } from "global";
 import { Application, Request, Response } from "express";
 import AuthContract from "./AuthContract";
+import Logger from "./Logger";
 
 type RouteCallback = ({ request, response }: HttpContext) => Promise<any>;
 type Route = {
@@ -111,14 +112,12 @@ export default class Router {
 
         this.registerRoutes(route.subRoutes);
       } else {
-        console.log(
-          "\x1b[34m",
+        Logger.info(
           `${route.method.toUpperCase().padEnd(5, " ")} ${
             route.path
           } ${route.handler?.padStart(40, ".")} ${
             route.middleware ? `[${route.middleware.join(", ")}]` : ""
-          }`,
-          "\x1b[0m"
+          }`
         );
 
         const resolvedMiddlwares =
@@ -151,7 +150,7 @@ export default class Router {
     handler: string
   ) {
     const lastRoute = this._routes[this._routes.length - 1];
-    
+
     if (lastRoute?.method === "router" && this._isConfiguringGroup) {
       lastRoute.subRoutes!.push({ path, method, handler });
     } else {
