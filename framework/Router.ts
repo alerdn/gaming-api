@@ -97,7 +97,7 @@ export default class Router {
     return this;
   }
 
-  post(path: string, handler: string) {
+  post(path: string, handler: string | RouteCallback) {
     this.#configureRoute("post", path, handler);
     return this;
   }

@@ -9,6 +9,10 @@ export const routesConfig = () => {
     return { hello: "world" };
   });
 
+  router.post("/ping", async () => {
+    return { pong: "pong" };
+  });
+
   usuariosRouter(router);
 
   router
