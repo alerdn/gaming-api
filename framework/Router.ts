@@ -1,14 +1,13 @@
 import Server from "framework/Server";
-import { HttpContext } from "global";
+import { HttpContext, RouteCallback } from "global";
 import { Application, Request, Response } from "express";
 import AuthContract from "./AuthContract";
 import Logger from "./Logger";
 
-type RouteCallback = ({ request, response }: HttpContext) => Promise<any>;
 type Route = {
   path?: string;
   method: "get" | "post" | "router";
-  handler?: string;
+  handler?: string | RouteCallback;
   middleware?: string[];
   subRoutes?: Route[];
 };
@@ -93,7 +92,7 @@ export default class Router {
     return new RouterGroup([lastRoute]);
   }
 
-  get(path: string, handler: string) {
+  get(path: string, handler: string | RouteCallback) {
     this.#configureRoute("get", path, handler);
     return this;
   }
@@ -113,9 +112,10 @@ export default class Router {
         this.registerRoutes(route.subRoutes);
       } else {
         Logger.info(
-          `${route.method.toUpperCase().padEnd(5, " ")} ${
-            route.path
-          } ${route.handler?.padStart(40, ".")} ${
+          `${route.method.toUpperCase().padEnd(5, " ")} ${route.path?.padEnd(
+            40,
+            "."
+          )} ${typeof route.handler === "string" ? route.handler : "Func"} ${
             route.middleware ? `[${route.middleware.join(", ")}]` : ""
           }`
         );
@@ -147,7 +147,7 @@ export default class Router {
   #configureRoute(
     method: "get" | "post" | "router",
     path: string,
-    handler: string
+    handler: string | RouteCallback
   ) {
     const lastRoute = this._routes[this._routes.length - 1];
 
@@ -158,7 +158,9 @@ export default class Router {
     }
   }
 
-  async #resolveHandler(handler: string) {
+  async #resolveHandler(handler: string | RouteCallback) {
+    if (typeof handler === "function") return handler;
+
     const [controller, method] = handler.split(".");
 
     const module = await import("app/controllers/" + controller);

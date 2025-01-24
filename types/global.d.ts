@@ -12,3 +12,8 @@ declare type MiddlewareHandler = (
   response: Response,
   next: () => void
 ) => void;
+
+declare type RouteCallback = ({
+  request,
+  response,
+}: HttpContext) => Promise<any>;
