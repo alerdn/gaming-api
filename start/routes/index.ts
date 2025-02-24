@@ -1,6 +1,5 @@
-import usuariosRouter from "./Usuarios";
-import scoresRouter from "./Scores";
 import Router from "framework/Router";
+import clienteRouter from "./Cliente";
 
 export const routesConfig = () => {
   const router = Router.Instance;
@@ -13,11 +12,5 @@ export const routesConfig = () => {
     return { pong: "pong" };
   });
 
-  usuariosRouter(router);
-
-  router
-    .group(() => {
-      scoresRouter(router);
-    })
-    .middleware(["auth"]);
+  clienteRouter(router);
 };

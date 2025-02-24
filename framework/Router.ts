@@ -3,6 +3,7 @@ import { HttpContext, RouteCallback } from "global";
 import { Application, Request, Response } from "express";
 import AuthContract from "./AuthContract";
 import Logger from "./Logger";
+import CustomException from "app/exceptions/CustomException";
 
 type Route = {
   path?: string;
@@ -174,6 +175,8 @@ export default class Router {
     { request, response, auth }: HttpContext
   ) {
     try {
+      if(!handlerResolved) throw new CustomException("Rota não encontrada", 404, "E_ROUTE_NOT_FOUND");
+      
       const resposta = await handlerResolved({ request, response, auth });
       response.send(resposta);
     } catch (error: any) {

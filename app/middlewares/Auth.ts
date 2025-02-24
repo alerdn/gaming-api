@@ -1,5 +1,5 @@
 import CustomException from "app/exceptions/CustomException";
-import Usuario from "app/models/Usuario";
+import Cliente from "app/models/Cliente";
 import { Request, Response, NextFunction } from "express";
 import Env from "framework/Env";
 import jwt from "jsonwebtoken";
@@ -14,7 +14,7 @@ export default class Auth {
     const decoded = jwt.verify(token, APP_KEY!);
     const { id } = decoded as { id: number };
 
-    const usuario = await Usuario.query().where({ id }).first();
+    const usuario = await Cliente.query().where({ id }).first();
     if (!usuario)
       throw new CustomException(
         "Usuário não encontrado",
